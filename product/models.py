@@ -2,9 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.utils.text import slugify
+
+
 # Create your models here.
 class Product(models.Model):
-
     CONDITION_TYPE = (
         ("New", "New"),
         ("Used", "Used")
@@ -17,6 +18,7 @@ class Product(models.Model):
     category = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True)
     brand = models.ForeignKey('Brand', on_delete=models.SET_NULL, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    image = models.ImageField(upload_to='main_product/', blank=True, null=True)
     created = models.DateTimeField(default=timezone.now)
 
     slug = models.SlugField(blank=True, null=True)
@@ -25,7 +27,6 @@ class Product(models.Model):
         if not self.slug and self.name:
             self.slug = slugify(self.name)
         super(Product, self).save(*args, **kwargs)
-
 
     def __str__(self):
         return self.name
@@ -41,7 +42,6 @@ class ProductImages(models.Model):
 
     def __str__(self):
         return str(self.product)
-    
 
 
 class Category(models.Model):
@@ -54,7 +54,6 @@ class Category(models.Model):
 
     def __str__(self):
         return self.category_name
-    
 
 
 class Brand(models.Model):
@@ -66,4 +65,3 @@ class Brand(models.Model):
 
     def __str__(self):
         return self.brand_name
-    

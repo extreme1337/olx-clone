@@ -1,13 +1,22 @@
 from django.shortcuts import render
-from .models import Product, ProductImages
+from .models import Product, ProductImages, Category
+from django.core.paginator import Paginator
+from django.db.models import Count
 
 
 # Create your views here.
 def productlist(request):
     productlist = Product.objects.all()
+    categorylist = Category.objects.annotate(total_products=Count('product'))
+
+    paginator = Paginator(productlist, 10)
+
+    page = request.GET.get('page')
+    productlist = paginator.get_page(page)
 
     context = {
-        'product_list': productlist
+        'product_list': productlist,
+        'category_list': categorylist
     }
 
     template = 'product/product_list.html'
